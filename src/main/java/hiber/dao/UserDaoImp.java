@@ -17,25 +17,25 @@ public class UserDaoImp implements UserDao {
 
    @Override
    public void add(User user) {
-      sessionFactory.openSession().save(user);
+      sessionFactory.getCurrentSession().save(user);
    }
 
    public User getCarUser(String model, int series){
-      Session session = sessionFactory.openSession();//— Объект для запроса не найден
+      Session session = sessionFactory.openSession();
       session.beginTransaction();
       TypedQuery<User> query = session.createQuery("SELECT user from User user where" +
-              " user.userCar.model = (:setModel) AND user.userCar.series = (:setSeries)",User.class);
+              " user.userCar.model = (:setModel) AND user.userCar.series = (:setSeries)", User.class);
       query.setParameter("setModel", model);
       query.setParameter("setSeries", series);
-      User updatedUser = query.getSingleResult();
+      User userCar = query.getSingleResult();
       session.close();
-      return updatedUser;
+      return userCar;
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public List<User> listUsers() {
-      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User");
       return query.getResultList();
    }
 
